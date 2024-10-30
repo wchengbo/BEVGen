@@ -17,7 +17,7 @@ This file contains a variety of utility functions for the Argoverse 2/nuScenes D
 """
 
 
-class Cameras(Enum):
+class Cameras(Enum):#Enum表示枚举数据类型，不可在外部更改其成员属性值，且该类中不存在重复的枚举成员，枚举类不可实例化对象
     NUSCENES_FRONT = ("CAM_FRONT",)
     NUSCENES_CAMERAS = ("CAM_FRONT", "CAM_BACK", "CAM_FRONT_RIGHT", "CAM_FRONT_LEFT", "CAM_BACK_RIGHT", "CAM_BACK_LEFT")
     NUSCENES_ABLATION_CAMERAS = ("CAM_FRONT", "CAM_FRONT_RIGHT", "CAM_FRONT_LEFT")
@@ -132,7 +132,7 @@ def chw_to_hwc(arr):
         return arr.transpose(1, 2, 0)
 
 
-def get_concat_h(im1, im2):
+def get_concat_h(im1, im2):#图像左右拼接
     dst = Image.new("RGB", (im1.width + im2.width, max(im2.height, im1.height)))
     dst.paste(im1, (0, 0))
     dst.paste(im2, (im1.width, 0))
@@ -144,21 +144,21 @@ def get_concat_h_space(im1, im2):
     dst.paste(im2, (im1.width + 10, 0))
     return dst
 
-def get_concat_v(im1, im2):
+def get_concat_v(im1, im2):#图像上下拼接
     dst = Image.new('RGB', (im1.width, im1.height + im2.height))
     dst.paste(im1, (0, 0))
     dst.paste(im2, (0, im1.height))
     return dst
 
-def torch_to_numpy(arr):
+def torch_to_numpy(arr):#Torch 张量转换为 NumPy 数组
     return (chw_to_hwc(arr) * 255).cpu().detach().numpy().astype(np.uint8)
 
 
-def numpy_to_pil(arr):
+def numpy_to_pil(arr):# NumPy 数组转换为 PIL 图像
     return Image.fromarray((arr * 255).astype(np.uint8))
 
 
-def get_layered_image_from_binary_mask(masks, flip=False):
+def get_layered_image_from_binary_mask(masks, flip=False):#将二值掩码（即多个通道的掩码图层）转换为彩色图像，以便可视化不同的掩码区域。
     if torch.is_tensor(masks):
         masks = masks.cpu().detach().numpy()
     if flip:
@@ -174,7 +174,7 @@ def get_layered_image_from_binary_mask(masks, flip=False):
     return Image.fromarray(img.astype(np.uint8))
 
 
-def get_img_from_binary_masks(masks, flip=False):
+def get_img_from_binary_masks(masks, flip=False):#将多通道二值掩码转换为一张彩色图像
     """H W C"""
     arr = encode_binary_labels(masks)
     if flip:
