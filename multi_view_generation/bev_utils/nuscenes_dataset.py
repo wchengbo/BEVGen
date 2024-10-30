@@ -494,6 +494,7 @@ class NuScenesDataset(Dataset):
         return bev
 
     def get_standard_bev(self, cam_record_data: Dict):
+        """生成一个标准的 BEV（Bird's Eye View）图像"""
         """Return BEV image (12-channel) that covers 360 deg around ego"""
         # Raw annotations
         anns_dynamic = get_annotations_by_category(self.nusc, cam_record_data, DYNAMIC)
