@@ -66,7 +66,8 @@ def return_binary_as_image(data):
     return repeat(((data.detach().cpu().numpy()) * 255).astype(np.uint8), '... -> ... c', c=3)
 
 def viz_bev(bev: Union[np.ndarray, torch.FloatTensor], dataset: Dataset = Dataset.NUSCENES) -> Im:
-    """(c h w) torch [0, 1] float -> (h w 3) np [0, 255] uint8"""
+    """(c h w) torch [0, 1] float -> (h w 3) np [0, 255] uint8
+    将鸟瞰视图（BEV, Bird's Eye View）张量转化为可视化的图像表示。这段代码将多通道 BEV 图像（包括不同类别的层，例如行人、车道等）映射为 RGB 图像"""
     
     if torch.is_tensor(bev):
         bev = bev.detach().cpu().numpy()
@@ -126,7 +127,7 @@ def raw_output_data_bev_grid(batch):
     return ret_images
 
 
-def batched_camera_bev_grid(cfg, images, bev=None, pred=None):
+def batched_camera_bev_grid(cfg, images, bev=None, pred=None):#批量处理的 BEV 数据和摄像头图像转换为网格布局，适合可视化展示
     if len(images.shape) == 4:
         images = images.unsqueeze(0)
 
@@ -147,6 +148,7 @@ def batched_camera_bev_grid(cfg, images, bev=None, pred=None):
 
 
 def ground_truth_camera_bev_grid(images: dict, bev=None, pred=None, keep_bev_space=False, add_car=True):
+    """将多视角相机图像和鸟瞰图 (BEV) 数据组合为一个网格布局的可视化图像"""
     images = {k: (Im(v).pil if not isinstance(v, Image.Image) else v) for k, v in images.items()}
 
     landscape_width = images[next(iter(images))].size[0]
@@ -203,6 +205,7 @@ def ground_truth_camera_bev_grid(images: dict, bev=None, pred=None, keep_bev_spa
     return dst
 
 def camera_bev_grid(images: dict, bev=None, pred=None, keep_bev_space=False, add_car=True):
+    """创建一个复合图像，显示多个摄像头视图以及场景的鸟瞰图（BEV）"""
     images = {k: (Im(v).pil if not isinstance(v, Image.Image) else v) for k, v in images.items()}
 
     landscape_width = images[next(iter(images))].size[0]
